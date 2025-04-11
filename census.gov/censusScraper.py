@@ -1,13 +1,14 @@
 #TODO:
-#   Get API key for project
-#   Setup upload to google sheets
 #   Handle possible exceptions
 
 import requests
 import os
+import gspread
+import pandas as pd
+from google.oauth2.service_account import Credentials
 
 #INPUTS
-YEAR = 2024
+YEAR = 2023
 KEY = "3a68398efff43f93cee5e0addb6597e78dc93a31" #CHANGE TO BE GROUP KEY
 
 #get filepath
@@ -23,15 +24,32 @@ URL += KEY
 req = requests.get(URL)
 req.raise_for_status()
 
-#create empty list to store JSON data
-jsonLines = []
+#create empty dataframe
+df = pd.DataFrame(columns=["County", "Median Income"])
 
-#iterate through request data, add data to JSON lines
+#iterate through request data, add data to dataframe
 for line in req.json():
     if "Utah" not in line[0]:
         continue
-    jsonLines.append('"' + line[0][:-13] + '", ' + line[1] + "\n")
+    df.loc[len(df)] = [line[0][:-13], int(line[1])]
 
-#write JSON lines to file
-with open(filepath + "\census.csv", "w") as file:
-    file.writelines(jsonLines)
+print(df)
+
+
+#BRAD'S PUSHING CODE
+
+# Load your credentials JSON file
+SERVICE_ACCOUNT_FILE = filepath + '/asctrib-80f6887f88b8.json'  # path to your file
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
+
+creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+client = gspread.authorize(creds)
+
+# Open Google Sheet (by name or ID)
+sheet = client.open("ASC Test Sheet").sheet1  # opens the first sheet
+
+# Clear the existing content
+sheet.clear()
+
+# Push headers + rows
+sheet.update([df.columns.values.tolist()] + df.values.tolist())
