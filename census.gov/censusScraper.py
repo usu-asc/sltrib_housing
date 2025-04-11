@@ -7,7 +7,7 @@ import requests
 import os
 
 #INPUTS
-YEAR = 2023
+YEAR = 2024
 KEY = "3a68398efff43f93cee5e0addb6597e78dc93a31" #CHANGE TO BE GROUP KEY
 
 #get filepath
