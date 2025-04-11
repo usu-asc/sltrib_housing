@@ -8,7 +8,7 @@ import os
 
 #INPUTS
 YEAR = 2024
-KEY = "6e2b95431f299e56cb3bca8359ccae1cf3b2604f" #CHANGE TO BE GROUP KEY
+KEY = "3a68398efff43f93cee5e0addb6597e78dc93a31" #CHANGE TO BE GROUP KEY
 
 #get filepath
 filepath = os.path.dirname(__file__)
